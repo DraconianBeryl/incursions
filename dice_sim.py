@@ -50,7 +50,36 @@ dice, and possibly also the effects of Unintended Consequences. The general
 success and failure mechanics may also be looked at.
 
 For example, is there any difference between: a. a die with two warp and one
-ward b. a die with one warp and no ward
+ward b. a die with one warp and no ward.
+
+Some hand calculations of the two simple scenarios above show that it's much
+less lively when you leave two faces blank rather than having one warp and one
+ward.  For 4 dice you have <2% chance of more than 2 Warp with die a., while
+you have >8% chance of more than 2 Warp with die b.  That's more than four
+times the number of "interesting results" (unintended consequences) even with
+two static Ward.
+
+shorthand:
+    P = warP
+    D = warD
+      = blank
+    L = Lesser success (only counts as success when empowered)
+    N = Normal success (counts as success unless depowered)
+    G = Greater success (always counts as success)
+    O = Empowered (mnemonic = Over-powered)
+    U = Depowered (mnemonic = Under-powered)
+    S = Success
+    F = Failure
+
+a. 1d{P, , ,L,N,G} = 1/6 1P, 5/6 0P
+   2d{P, , ,L,N,G} = 1/36 2P, 10/36 1P, 25/36 0P
+   3d{P, , ,L,N,G} = 1/216 3P, 15/216 2P, 75/216 1P, 125/216 0P
+   4d{P, , ,L,N,G} = 1/1296 4P, 20/1296 3P, 150/1296 2P, 500/1296 1P, 625/1296 0P
+
+b. 1d{P,P,D,L,N,G} = 2/6 1P, 3/6 0P, 1/6 1D
+   2d{P,P,D,L,N,G} = 4/36 2P, 12/36 1P, 13/36 0P, 6/36 1D, 1/36 2D
+   3d{P,P,D,L,N,G} = 8/216 3P, 36/216 2P, 66/216 1P, 63/216 0P, 33/216 1D, 9/216 2D, 1/216 3D
+   4d{P,P,D,L,N,G} = 16/1296 4P, 96/1296 3P, 248/1296 2P, 360/1296 1P, 321/1296 0P, 180/1296 1D, 62/1296 2D, 12/1296 3D, 1/1296 4D
 
 Other options to explore
  a. one always warp and one maybe warp (condition TBD)
