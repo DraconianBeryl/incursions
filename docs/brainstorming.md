@@ -721,3 +721,64 @@ At BGG 2022, a comment was made to me about a wish for a game that blended the s
 * if going with a "laundry files" context, consider making it in the very early days of the organization - they don't have a strong position within government (assuming they're even part of government), barely or begrudgingly funded, very slim on both HUMINT and SIGINT, and while the higher ups may have a good understanding of the shape and scope of the threat they know very little about any particulars.  they're also very, very, short on highly qualified field agents.
 * the characters start out as fairly ordinary people - accountants, archivists, craftsmen, tradesman, merchants, etc (see the professions of the AH investigators), but are exposed, or somehow develop, something that brings them to the attention of "the laundry" and seals them to the organization.  this event also enabled/predisposes them to being able to use the profane magics so that they have to walk the tighrope for their entire career.
 
+# Location Mix
+
+## Breakdown of AH2 Locations
+
+### Stable/Unstable
+
+Base Game: 15 Stable, 11 Unstable (Clue/Gate/Monster Bearing), 9 Street (wandering monster), LiTaS, 8 x 2 OW
+
+Dunwich: 4 Stable, 5 Unstable, 4 Street, 2 x 2 OW
+
+Kingsport: 12 Stable, 3 Street, 2 x 2 OW
+
+Innsmouth: 4 Stable, 4 Unstable, 5 Street
+
+### Special Actions
+
+Base Game (13/26+9)
+
+1. Bank: Loans of $
+2. Asylum: Sanity recovery
+3. Police Station: Jail / MT into Deputy
+4. General Store: Common Items Shop
+5. Boarding House: Allies
+6. Church: Blessings
+7. Magick Shoppe: Spells
+8. Hospital: Health recovery
+9. MU Administration: Skills
+10. Science Building: MT into Clues
+11. Docks: MT into $
+12. Curiositie Shoppe: Unique Items
+13. Train Station: Travel
+
+Dunwich (5/9+4)
+
+1. Carnival: Game of Chance
+2. Village: Shop, mixed Common/Unique
+3. Shack: minor recovery, health or sanity
+4. Devil's Hopyard: MT into $ and clue
+5. Bridge: Travel
+
+Kingsport (6+1/12+3)
+
+1. Curiosity Shop: Items into $
+2. Central Hill (street): Travel
+3. Tavern: $ into Food or Whisky
+4. Lighthouse: MT into Captain of the White Ship
+5. Causeway: Delay
+6. Wireless Station: Delay
+7. Strange High House in the Mist: MT into Changed (Great Seal)
+
+Innsmouth (6+2/8+5)
+
+1. Jail: lockup/escape
+2. Alley (street): escape aid
+3. Grocery: $ into Food or minor info
+4. Hotel: maybe minor recovery, health or sanity
+5. Reef: Delay
+6. Y'ha-nthlei: Hard-to-reach gate
+7. Falcon Point: Water travel, self or other
+8. Bus Service (street): Travel
+
