@@ -62,6 +62,38 @@ of the setup decks.
 
 #### Components
 
+##### Flavored dice
+
+All sets of dice have warp/ward. Each PC has a designated "native" flavor of magic and the rules state that
+warp/ward results are ignored on all dice of that designated "native" flavor.
+
+1. one or more sets of colored dice for all magic types, have the warp and ward symbols as described elsewhere.
+
+Benefit - only one template needed for all dice.
+
+Detriment - one color of dice must be canonically associated with the "native" magic of the world. There are multiple
+viable options for this, but there are also several options that SHOULD be avoided.
+
+Detriment - this pretty much requires that the physical game ship with one set of dice for each flavor of magic,
+of which there have been planned to be many, or else it requires some other manual bookkeeping by the players
+the same as the "unflavored dice" option.
+
+##### Unflavored dice
+
+One set of dice has all of the symbols described elsewhere - the grades of success, warp, and ward.
+Another set of dice only has the grades of success.
+
+1. a set of dice for "native" and non- magic, have only the symbols for successes.
+2. one or more sets of dice for "alien" magic, have the warp and ward symbols as described elsewhere.
+
+Benefit - makes the results less cluttered and potentially notably easier to read.
+
+Benefit - possibly the lowest cost alternative, even with the need for two dice templates, because the game
+only needs two sets of dice (with some aid for any cases when multiple flavors of alien magic are involved).
+
+Detriment - the most benefit is seen when all of the dice are the same color, which means that the game ought
+to provide some assistance to the players to track things when a roll involves multiple flavors of alien magic.
+
 # Setting
 
 ## Professions
