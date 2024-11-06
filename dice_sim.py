@@ -59,6 +59,13 @@ you have >8% chance of more than 2 Warp with die b.  That's more than four
 times the number of "interesting results" (unintended consequences) even with
 two static Ward.
 
+(a quick check of the math verified that it was correct and that the average is
+the same for both dice; what's different is that the dice with the ward symbols
+have a larger range opposing the warp - ranging from -N to N warp - and with the
+same average that requires more results in the upper positive end of the range;
+this works out beautifully from the evil GM perspective because excess ward is
+wasted)
+
 shorthand:
     P = warP
     D = warD
@@ -81,6 +88,11 @@ b. 1d{P,P,D,L,N,G} = 2/6 1P, 3/6 0P, 1/6 1D
    3d{P,P,D,L,N,G} = 8/216 3P, 36/216 2P, 66/216 1P, 63/216 0P, 33/216 1D, 9/216 2D, 1/216 3D
    4d{P,P,D,L,N,G} = 16/1296 4P, 96/1296 3P, 248/1296 2P, 360/1296 1P, 321/1296 0P, 180/1296 1D, 62/1296 2D, 12/1296 3D, 1/1296 4D
 
+c. 1d{P,P,D,L+D,N,G+P} = 3/6 1P, 1/6 0P, 2/6 1D
+   2d{P,P,D,L+D,N,G+P} = 9/36 2P, 6/36 1P, 13/36 0P, 4/36 1D, 4/36 2D
+   3d{P,P,D,L+D,N,G+P} = 27/216 3P, 27/216 2P, 63/216 1P, 37/216 0P, 42/216 1D, 12/216 2D, 8/216 3D
+   4d{P,P,D,L+D,N,G+P} = 81/1296 4P, 108/1296 3P, 270/1296 2P, 228/1296 1P, 289/1296 0P, 152/1296 1D, 120/1296 2D, 32/1296 3D, 16/1296 4D
+
 Other options to explore
  a. one always warp and one maybe warp (condition TBD)
  b. three levels of warp - corresponding with the three levels of power for
@@ -90,130 +102,231 @@ Other options to explore
 
 from dataclasses import dataclass
 import enum
+import numpy as np
 import random
 import statistics
 import typing
-
-class DieFace(enum.StrEnum):
-    WARP         = enum.auto()
-    WARD         = enum.auto()
-    WEAK_POWER   = enum.auto()
-    POWER        = enum.auto()
-    STRONG_POWER = enum.auto()
-
-ABILITY_DIE = (DieFace.WARP, DieFace.WARP, DieFace.WARD, DieFace.WEAK_POWER, DieFace.POWER, DieFace.STRONG_POWER)
-ABILITY_DIE_SIDES = len(ABILITY_DIE)
-
-class Aspect(enum.StrEnum):
-    NATIVE = enum.auto()
-    FIRE   = enum.auto()
-    AIR    = enum.auto()
-    WATER  = enum.auto()
-    EARTH  = enum.auto()
 
 class RollContext(enum.StrEnum):
     STANDARD  = enum.auto()
     DEPOWERED = enum.auto()
     EMPOWERED = enum.auto()
 
-@dataclass(frozen=True)
-class DieRoll:
-    aspect: Aspect
-    face: DieFace
+class DieSymbol(enum.StrEnum):
+    WARP         = enum.auto()
+    WARD         = enum.auto()
+    WEAK_POWER   = enum.auto()
+    POWER        = enum.auto()
+    STRONG_POWER = enum.auto()
 
-    def __str__(self):
-        return self.face + "(" + self.aspect + ")"
+def symbolWarpValue(sym: DieSymbol, context: RollContext = RollContext.STANDARD):
+    match sym:
+        case DieSymbol.WARP:
+            return 1
+        case DieSymbol.WARD:
+            return -1
+        case _:
+            return 0
 
-class TestRollResults:
-    def __init__(self, powerContext: RollContext = RollContext.STANDARD):
-        self.powerContext = powerContext
-        self.dice = []
+def symbolSuccessValue(sym: DieSymbol, context: RollContext = RollContext.STANDARD):
+    match sym:
+        case DieSymbol.STRONG_POWER:
+            return 1
+        case DieSymbol.POWER:
+            if context != RollContext.DEPOWERED:
+                return 1
+            return 0
+        case DieSymbol.WEAK_POWER:
+            if context == RollContext.EMPOWERED:
+                return 1
+            return 0
+        case _:
+            return 0
 
-    def addResult(self, result: DieRoll):
-        self.dice.append(result)
+class DieFace():
+    faceNames = {}
 
-    def successes(self) -> int:
-        nSuccesses = 0
-        for d in self.dice:
-            if d.face == DieFace.WEAK_POWER and self.powerContext == RollContext.EMPOWERED:
-                nSuccesses += 1
-            if d.face == DieFace.POWER and self.powerContext != RollContext.DEPOWERED:
-                nSuccesses += 1
-            if d.face == DieFace.STRONG_POWER:
-                nSuccesses += 1
-        return nSuccesses
+    def __init__(self, /, name: str, symbols: dict):
+        if name in DieFace.faceNames:
+            raise ValueError("Duplicate DieFace name")
+        for symbol, qty in symbols.items():
+            if symbol not in DieSymbol and not isinstance(symbol, int):
+                raise ValueError("Unknown symbol '{}' on DieFace '{}'".format(symbol, name))
+            if not isinstance(qty, int):
+                raise ValueError("Unusable quantity '{}' of symbol '{}' on DieFace '{}'".format(qty, symbol, name))
+        self.name = name
+        self.symbols = symbols
 
-    def netWarp(self) -> int:
-        aspectedWarp = {}
-        for d in self.dice:
-            if d.aspect != Aspect.NATIVE:
-                if d.aspect not in aspectedWarp:
-                    aspectedWarp[d.aspect] = 0
-                if d.face == DieFace.WARP:
-                    aspectedWarp[d.aspect] += 1
-                if d.face == DieFace.WARD:
-                    aspectedWarp[d.aspect] -= 1
-        for a in aspectedWarp:
-            if aspectedWarp[a] < 0:
-                aspectedWarp[a] = 0
-        return aspectedWarp
+    def warpValue(self, context: RollContext = RollContext.STANDARD):
+        return sum(symbolWarpValue(s, context) * self.symbols[s] for s in self.symbols)
 
-    def __str__(self):
-        return '[' + ','.join(str(d) for d in self.dice) + ']@' + self.powerContext
+    def successValue(self, context: RollContext = RollContext.STANDARD):
+        return sum(symbolSuccessValue(s, context) * self.symbols[s] for s in self.symbols)
 
-class Ability:
-    def __init__(self, name: str, score: int, baseType: Aspect = Aspect.NATIVE, specials: dict = None):
-        if score <= 0:
-            raise ValueError
+class Die():
+    dieNames = {}
 
-        self.name     = name
-        self.score    = score
-        self.baseType = baseType
-        self.pool = {}
+    def __init__(self, /, name: str, faces: list[DieFace]):
+        if name in Die.dieNames:
+            raise ValueError("Duplicate Die name")
 
-        scoreBalance = score
+        self.name = name
+        self.faces = faces
+        self.sides = len(faces)
 
-        if specials is not None:
-            for specialKey in specials.keys():
-                if specialKey not in Aspect:
-                    raise ValueError
-                if specials[specialKey] <= 0:
-                    raise ValueError
-                if specials[specialKey] > scoreBalance:
-                    raise ValueError
-                self.pool[specialKey] = specials[specialKey]
-                scoreBalance -= specials[specialKey]
+    def allResults(self, context: RollContext = RollContext.STANDARD, terseKeys: bool = False):
+        results = {}
 
-        self.pool[baseType] = scoreBalance
+        for face in self.faces:
+            successKey = face.successValue(context)
+            warpKey = face.warpValue(context)
 
-    def __str__(self):
-        representation = self.name + "(" + self.baseType + ": " + str(self.pool[self.baseType])
+            if terseKeys:
+                results[(successKey,warpKey)] = results.get((successKey,warpKey),0) + 1
+            else:
+                successKey = "Successes:" + str(successKey)
+                warpKey = "Warp:" + str(warpKey)
 
-        for specialType in self.pool:
-            if specialType != self.baseType:
-                representation += ", " + specialType + ": " + str(self.pool[specialType])
+                if successKey not in results:
+                    results[successKey] = {}
 
-        representation += ")"
+                successSubset = results[successKey]
 
-        return representation
+                successSubset[warpKey] = successSubset.get(warpKey, 0) + 1
 
-    def roll(self, powerContext: RollContext = RollContext.STANDARD):
-        result = TestRollResults(powerContext)
+        return results
 
-        for a,n in self.pool.items():
-            for i in range(n):
-                result.addResult( DieRoll(aspect=a, face=random.choice(ABILITY_DIE)) )
+class DiePool():
+    def __init__(self, /, name: str, dice: list[Die]):
+        self.name = name
+        self.dice = dice
+        self.nDice = len(dice)
 
-        return result
+    def allResults(self, context: RollContext = RollContext.STANDARD, terseKeys: bool = False):
+        results = { (0,0): 1 }
 
+        for die in self.dice:
+            nextResults = {}
 
-strength = Ability("Strength", 3)
-speed    = Ability("Speed", 5, Aspect.AIR)
-health   = Ability("Health", 5, Aspect.NATIVE, { Aspect.EARTH: 2 })
-wisdom   = Ability("Wisdom", 4, Aspect.NATIVE, { Aspect.WATER: 1, Aspect.FIRE: 3 })
+            dieResults = die.allResults(context, terseKeys=True)
 
-for ability in (strength, speed, health, wisdom):
-    for powerContext in RollContext:
-        for i in range(10):
-            tr = ability.roll(powerContext)
-            print((str(tr),tr.successes(),tr.netWarp()))
+            for dieResult in dieResults:
+                for prevResult in results:
+                    newResult = (prevResult[0]+dieResult[0],prevResult[1]+dieResult[1])
+
+                    nextResults[newResult] = nextResults.get(newResult,0) + dieResults[dieResult] * results[prevResult]
+
+            results = nextResults
+
+        if terseKeys:
+            return results
+
+        longResults = {}
+
+        for successWarpPair, count in results.items():
+            successKey = "Successes:" + str(successWarpPair[0])
+            warpKey = "Warp:" + str(successWarpPair[1])
+
+            if successKey not in longResults:
+                longResults[successKey] = {}
+
+            longResults[successKey][warpKey] = count
+
+        return longResults
+
+def printFormattedResults(results: dict):
+    minSuccesses = 0
+    maxSuccesses = 0
+    minWarp = 0
+    maxWarp = 0
+
+    for successWarpPair in results:
+        if successWarpPair[0] < minSuccesses:
+            minSuccesses = successWarpPair[0]
+        if successWarpPair[0] > maxSuccesses:
+            maxSuccesses = successWarpPair[0]
+        if successWarpPair[1] < minWarp:
+            minWarp = successWarpPair[1]
+        if successWarpPair[1] > maxWarp:
+            maxWarp = successWarpPair[1]
+
+    successRange = (maxSuccesses - minSuccesses + 1)
+    warpRange = (maxWarp - minWarp + 1)
+
+    successTotals = [0] * successRange
+    warpTotals = [0] * warpRange
+
+    gridTotals = []
+
+    n = 0
+
+    for nSuccesses in range(minSuccesses, maxSuccesses + 1):
+        gridTotals.append([0] * warpRange)
+
+    for successWarpPair,count in results.items():
+        successTotals[successWarpPair[0] - minSuccesses] += count
+        warpTotals[successWarpPair[1] - minWarp] += count
+        n += count
+        gridTotals[successWarpPair[0] - minSuccesses][successWarpPair[1] - minWarp] += count
+
+    print("n=" + str(n))
+
+    successWidth = max(len(str(minSuccesses)),len(str(maxSuccesses)))
+    warpWidth = max(len(str(minWarp)),len(str(maxWarp)),len("{:%}".format(1)))
+
+    successLeaderFormat = " {:+" + str(successWidth) + "d}"
+    warpHeaderFormat = " {:^+" + str(warpWidth) + "d}"
+    cellFormat = " {:" + str(warpWidth) + "%}"
+    emptyCellFormat = " {:^" + str(warpWidth) + "}"
+    emptyCellText = emptyCellFormat.format("-")
+
+    print(" " * (successWidth + 2), end='')
+    for nWarp in range(minWarp,maxWarp + 1):
+        print(warpHeaderFormat.format(nWarp), end='')
+    print()
+
+    for nSuccess in range(minSuccesses,maxSuccesses + 1):
+        successIndex = nSuccess - minSuccesses
+        print(successLeaderFormat.format(nSuccess), end='')
+        warpRow = gridTotals[successIndex]
+        for warpIndex in range(maxWarp - minWarp + 1):
+            if warpRow[warpIndex]:
+                print(cellFormat.format(warpRow[warpIndex] / n), end='')
+            else:
+                print(emptyCellText, end='')
+        print(" = ", end='')
+        print(cellFormat.format(successTotals[nSuccess] / n))
+
+    print(" " * (successWidth + 2), *list(["=" * warpWidth] * warpRange) )
+    print(" " * (successWidth + 2), end='')
+    for warpIndex in range(maxWarp - minWarp + 1):
+        print(cellFormat.format(warpTotals[warpIndex] / n), end='')
+    print()
+
+warpFace = DieFace(name="Warp", symbols={ DieSymbol.WARP: 1 })
+wardFace = DieFace(name="Ward", symbols={ DieSymbol.WARD: 1 })
+wsFace = DieFace(name="Weak Success", symbols={ DieSymbol.WEAK_POWER: 1 })
+sFace = DieFace(name="Normal Success", symbols={ DieSymbol.POWER: 1 })
+ssFace = DieFace(name="Strong Success", symbols={ DieSymbol.STRONG_POWER: 1 })
+
+warpingDie = Die(name="Warping Die", faces=[warpFace, warpFace, wardFace, wsFace, sFace, ssFace])
+
+wsdFace = DieFace(name="Weak Success + Ward", symbols={ DieSymbol.WEAK_POWER: 1, DieSymbol.WARD: 1 })
+sspFace = DieFace(name="Strong Success + Warp", symbols={ DieSymbol.STRONG_POWER: 1, DieSymbol.WARP: 1 })
+
+midWarpingDie = Die(name="Mad Warping Die", faces=[warpFace, warpFace, wardFace, wsdFace, sFace, sspFace])
+
+warp2Face = DieFace(name="Warp", symbols={ DieSymbol.WARP: 2 })
+ward2Face = DieFace(name="Ward", symbols={ DieSymbol.WARD: 2 })
+
+madWarpingDie = Die(name="Mad Warping Die", faces=[warp2Face, warpFace, ward2Face, wsdFace, sFace, sspFace])
+
+#for nDice in range(8 + 1):
+for nDice in (1,4):
+    for die in (warpingDie, midWarpingDie, madWarpingDie):
+        pool = DiePool(str(nDice)+"dW", [die]*nDice)
+
+        for context in (RollContext.DEPOWERED, RollContext.STANDARD, RollContext.EMPOWERED):
+            printFormattedResults(pool.allResults(context,terseKeys=True))
+            print()
+
