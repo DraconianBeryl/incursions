@@ -16,6 +16,7 @@ Game Design Document
 + MoM2 - Mansions of Madness, Second Edition
 + PACG - Pathfinder Adventure Card Game
 + SH - [Secret Histories](https://weatherfactory.biz/sixth-history-community-licence/)
++ TES - [The Elder Scrolls](https://en.wikipedia.org/wiki/The_elder_scrolls)
 
 ## Overview
 
@@ -306,13 +307,16 @@ and, by extension, the setting.
       level spell slot they gain two second level slots), so a
       high-level wizard can cast spells like "Scorching Ray" all day
       long, but it would take a ritual to cast a single "Fireball".
+      Along with this lack of high-level spells, almost everyone gets
+      cantrips.
 2. Uses a version of "tech" that is based on magic.  I think that the
    dynamics of having a blurry dichotomy between tech and magic will
    complicate and distract from some of the other mechanics I want to
    develop, such as corruption based on "alien" magic.
    1. Iron, and its alloys, will absorb all flavors of magic, so it
       tends to not be used for things.  The precise mechanics of this
-      are TBD, but it is limited.
+      are TBD, but it is limited.  It's entirely probable that no one
+      has bothered yet to do any systematic research into this effect.
    2. Iron ore can be transformed into an ore for "Adamant", a metal
       that will generally play the role of steel.
    3. Copper ore can be similarly transformed into an ore for
@@ -353,6 +357,252 @@ and, by extension, the setting.
    "flavor".  This is called "Ward".
 
 ## Mechanics
+
+### Doom Clock
+
+In all stages of the game, no matter what duration it represents, each
+space on the Doom Clock is a "Tick", and all game mechanics will give
+duration in Ticks, allowing them to work no matter what scale currently
+applies. For the sake of player comfort there will probably be a set of
+spaces on the Doom Clock with a marker to indicate what the current
+scale is - Days, Hours, or 5 Minutes - but this exists only to give the
+players a sense of grounding and urgency as the scale gets shorter.
+
+### Player Attributes
+
+#### Attribute Hierarchy
+
+Player characters will have a hierarchy of attributes that skills are
+based on.  Each level in the hierarchy contributes dice to the
+attributes that fall under it.
+
+1. Soul - the core of a person
+
+Under Soul a person is made up of three parts:
+
+1. Body - the physical part of a person, built on soul
+2. Spirit - the ... (intangible?) part of a person
+3. Mind - the mental part of a person, built on soul
+
+Each of these three subparts will have an expression in Force and an
+expression in Finesse.  This results in six attributes, though there may
+be times and places where Soul, Body, Mind, and Spirit are tested
+directly separate from the Force/Finesse expressions.  The names of
+the Force/Finesse expressions are not final.
+
+1. Body/Force - Strength, Brawn, or Might
+2. Body/Finesse - Dexterity, Nimbleness, or Agility
+3. Spirit/Force - Will
+4. Spirit/Finesse - Charm
+5. Mind/Force - Intellegence or Intellect
+6. Mind/Finesse - Cleverness
+
+Possibly the expressions won't be given official names and will remain
+(Body|Spirit|Mind)/(Force|Finesse).  If we have standard iconogoraphy
+we'll need iconography for Body/Spirit/Mind and Force/Finesse even if we
+use the specific names.  If we use the specific names then we probably
+ought to also have specific icons for each of those things, but if we
+don't use specific names then we definitely don't need thsoe six icons.
+
+To give examples of what these represent:
+
+1. If presented with a locked door, using Body/Force would result in
+   something getting broken to allow passage through the door while
+   using Body/Finesse would be something like picking the lock.
+2. If presented with a guard in the way, using Spirit/Will would be
+   getting past them by overwhelming personality, authority cues,
+   and intimidation in some combination while using Spirit/Charm would
+   (probably) be more subtle, invoking some combination of confusion,
+   seduction, and misdirection.
+3. If presented with a puzzle, using Mind/Intellect would be working out
+   the intended correct solution while using Mind/Cleverness would be
+   noticing a way to circumvent or bypass the mechanism.
+
+The dice in the Soul area will be used for all checks and the dice in
+the three primary subares (Body/Spirit/Mind) will be used for all
+Force/Finesse checks, and then each of the Force/Finesse expressions can
+have their own dice.
+
+The starting point for balance is two Soul dice, one or two dice in each
+of Body, Spirit, and Mind, and zero to two dice in each Force/Finesse
+expression, so characters will be rolling three to six dice per check
+before adding in equipment or specific skills.
+
+#### Checks
+
+When multiple attributes are available for a check it is player's choice
+which to use, though some equipment may only be usable with certain
+attributes or may make additional non-standard options available.  There
+are some general guidelines.
+
+It is intended to give each area and speciality distinct meaningful
+things to do of roughly equal overall value to the mission.
+
+Combat uses Body/either, with its contribution being straightforward and
+easy to understand.  Spell casting uses (Spirit|Mind)/Force,
+contributing in a wide variety of outcomes, but usually not as the only
+solution to those obstacles.  Thaumostatic device control uses
+(Spirit|Mind)/Finesse and is intended as the major contribution purpose
+for those attributes.
+
+This will take deliberate design decisions to remain meaningful, but it
+does fit with the setting and theme - part of why there's this
+widespread problem now is that the adoption of the thaumostatic engine
+trivializes access to top-tier (for this world) magical power, and is
+therefore indispensible to powering the ritiuals necessary to enable
+serious incursions and summonings.  It allows things to be accomplished
+in wweks that previously took decades of careful (and easily disrupted)
+work.  Therefore the manipulation of thaumostatic devices should have a
+central role in the final confrontation and at many other points along
+the way, including interactions not directly related to the threat.
+
+There are also uses of lesser importance, but still well-defined.
+Physical tools use Mind/either.  Magical (non-thaumostatic) tools use
+Spirit/either.  Social interactions use Spirit/either.  Puzzles use
+Mind/either.  Interactions with non-sentient beings use
+(Spirit|Mind)/Finesse.  Searching/observing uses Mind/either.  Unaided
+physical actions use Body/either.
+
+Luck uses Soul, and only Soul.
+
+Note that due to the corruption mechanics there will not be any
+modifiers applied to the number of dice rolled (e.g. for difficulty),
+instead all of the adjustment will have to be done through the number of
+successes or other means.  Leaving dice out (subtracting) will either
+allow players to prune out their more harmful dice or will require a
+special rule (remove native dice first).  Extra temporary dice (adding)
+will allow players to circumvent harmful effects (e.g. "corrupt one die
+used in this check") unless there's a special rule to prevent it
+(bonus dice can't be corrupted).  Keeping all of the difficulty tuning
+to modifying the number of needed successes eliminates the need for both
+of those special rules and streamlines the gameplay.  Adjusting the
+number of needed successes is less granular than adding and removing
+individual dice, by roughly 1:3, so there may be need for something else
+new in this space.
+
+#### Health Pools
+
+Characters will have "health" in each of the three parts of their Soul.
+Though the names for these are still TBD, if one were to use an AH spin
+on the names they might be Stamina for Body Health, Sanity for Mind
+Health, and Focus for Spirit Health.  But I'm also fundamentally opposed
+to "Sanity" for Mind Health because of the connotations to "losing
+sanity" which are contrary to the intended design.
+
+Perhaps "Heartiness" for Body, "Resolve" for Spirit, and "Reason" for
+Mind.
+
+Mechanically, each of these "healths" will have a maximum capacity that
+matches the total number of dice in that area, plus the Soul dice.  So
+for Health the total would be Soul + Body + Might + Agility, which will
+provisionally range from three to eight.
+
+Having one of these health pools reach zero must be detrimental, but
+should also be minimally disruptive - the AH2 rule of moving to the
+hospital or asylum, or even worse lost in time and space, has been
+solely responsible for games being lost by completely derailing careful
+planning.
+
+Drawing inspiration from AH2's Injury/Madness cards, giving the player
+choice of consequences seems like a good idea, provided those choices
+are meaningful.
+
+Provisionally the general term for one of these health pools being
+depleted is "Broken".
+
+Options for resolving a "Broken" status:
+
+1. Some time delay, possibly with options
+2. Possibility for emergency assistance from another character within a
+   certain timeframe
+3. Lose a die from one of the associated areas, with removing a Soul die
+   affecting all areas (maximum health as well as rolls going forward).
+   The assocciated Health is restored to the new maximum and there is
+   little, or no, further penalty.
+4. Character is only Lost when the last die is removed from their Soul
+   pool.  Possibly when the last Native die is removed from their Soul
+   pool, though players will likely want to remove "Alien" dice first
+   even without reinforcement like this, but having this be the rule
+   would also allow for characters to be Lost due to the corruption of
+   their last Native Soul die.
+5. Possibility to function in unbroken areas - e.g. someone Broken in
+   Body might still be able to fast-talk or cast spells - for some
+   period of time (e.g. while waiting for rescue), which might be
+   necessary for dealing with an actively hostile source of the injury.
+6. Automatic failure of further checks in that area until remediated.
+   As a "mercy", no rolls would be made so there wouldn't be any
+   additional risk of further corruption on these failed rolls, if for
+   some reason (such as combat) the character were forced to make such
+   checks.
+
+Possible terms include "Infirm" for Broken Body, "Disheartened" for
+Broken Spirit, and "Irrational" for Broken Mind.  Especially if the
+character is able to function in other areas the name of the condition
+should reflect and imply that (e.g. "Apathy" would be a poor choice for
+Broken Spirit since it implies general inaction).
+
+The states of "Infirm", "Disheartened", and "Irrational" could be
+general conditions that can be applied temporarily by various effects
+and are applied automatically, and permantent until healed, when the
+pools are depleted.
+
+#### Game Component
+
+These are likely to be presented on character cards along the lines of:
+
+    ┌─┬──┬────┐
+    │ │  │    │
+    │ │  ├────┤
+    │ │  │    │
+    │ ├──┼────┤
+    │ │  │    │
+    │ │  ├────┤
+    │ │  │    │
+    │ ├──┼────┤
+    │ │  │    │
+    │ │  ├────┤
+    │ │  │    │
+    └─┴──┴────┘
+
+Though it does look a bit distorted here because the line-drawing
+characters aren't square.
+
+Rather than placing actual game dice on the character cards, with the
+implication that they would have to be removed, rolled, and then
+replaced exactly as they were, tokens of some sort will represent the
+dice, probably colored cubes.  If using plastic cubes, could use solid
+cubes as the tokens for "safe" dice and transparent cubes as tokens for
+"unsafe" dice, but that's probably premature window dressing.
+
+With three items (Body, Mind, and Spirit) contributing to a whole it is
+very tempting to give each of them a primary color and blend them
+together for the Soul, though an argument can be made for both the
+addative and subtractive methods of color mixing.
+
+Using the addative method I could have the Body be red, the Mind be blue
+(following AH conventions), and the Spirit be green, resulting in a
+white Soul, with the blending of Spirit plus Body being yellow, Spirit
+plus Mind being cyan, and Body plus Mind being magenta.
+
+Using the subtractive method I could have the Body be yellow, the Mind
+be cyan, and the Spirit be magenta, resulting in a black Soul and the
+blending of Spirit plus Body being red, the blending of Spirit plus Mind
+being blue, and the blending of Body plus Mind being green.
+
+Any such coloration will be primarily aesthetic, though possibly used as
+reinforcement by repeated association in various places.  It MUST NOT be
+used for gameplay or to communicate information that the player needs
+(color blindness).
+
+Force and Finesse will be differentiated within each color through
+brightness and saturation.
+
+Having either black or white souls invokes shades of TES series where
+there is a fundamental distinction between "people" (man/mer/beastfolk)
+souls and other souls (though the handling and treatement of this is, as
+with all things TES, uneven in the lore).  In this universe the
+distinction would be between "native" souls (of all sizes and stages of
+sentience) and "alien" souls (of all sizes and stages of sentience).
 
 ## Art Style
 
