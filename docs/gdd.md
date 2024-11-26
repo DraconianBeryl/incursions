@@ -356,6 +356,35 @@ and, by extension, the setting.
    influence of "alien" magics, though usually only one specific
    "flavor".  This is called "Ward".
 
+## Narrative Arc
+
+### Overview
+
+The narrative arc will be explicitly split up over the base game and
+expansions.
+
+### Base Game
+
+The base game will only provide for "one-off" missions initiated and led
+by ad-hoc teams of independents.  This is explicit in the rules and
+written narrative.
+
+In mechanical narrative the game balance should lean towards a very high
+rate of heroic sacrifice KIA and ending the game at "Dead Man Walking"
+(DMW) levels of corruption.
+
+While most will probably score themselves on a pass/fail basis, the game
+will provide a way of calculating an end game score as a means of
+furthering this narrative by mechanics.  In this scoring the
+success/failure of the mission is the largest determinant, but
+individual outcomes also feature greatly with surviving scoring best,
+but KIA and DMW not far behind (and identical).  Bonus points can be
+awarded for becoming KIA or DMW as part of a heroic sacrifice to bring
+about the success of the mission.  This scoring will be the basis for
+team performance evaluations when campaign play is introduced later.
+
+### Expansions
+
 ## Mechanics
 
 ### Doom Clock
