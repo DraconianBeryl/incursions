@@ -7,20 +7,26 @@ import statistics
 LOCATION_IDS = [chr(c) for c in range(ord("A"),ord("Z") + 1)]
 CLUE_IDS = [chr(c) for c in range(ord("α"),ord("ω") + 1)]
 
-def mapGenerator(nClueLocations: int, nLocationEncounters: int, nStarterClues: int):
+def mapGenerator(nClueLocations: int, nLocationEncounters: int, nStarterClues: int, nThrowaways: int = 0):
     if nClueLocations > len(LOCATION_IDS):
         raise ValueError
-    if (nClueLocations + nStarterClues) > len(CLUE_IDS):
+    if (nClueLocations + nStarterClues + nThrowaways) > len(CLUE_IDS):
+        raise ValueError
+
+    nWithheld = nStarterClues + nThrowaways
+
+    if nWithheld > nClueLocations:
         raise ValueError
 
     locs = LOCATION_IDS[0:nClueLocations]
-    syms = CLUE_IDS[0:(nClueLocations+nStarterClues)]
+    syms = CLUE_IDS[0:(nClueLocations+nStarterClues+nThrowaways)]
 
     def _mapGenerator():
         locShuffle = random.sample(locs, len(locs));
         starterClues = locShuffle[:nStarterClues]
-        targets = locShuffle[nStarterClues:]
-        targets += syms[:nStarterClues]
+        throwAways = locShuffle[nStarterClues:nWithheld]
+        targets = locShuffle[nWithheld:]
+        targets += syms[:nWithheld]
         random.shuffle(targets)
         return {
             "starters": starterClues,
@@ -41,6 +47,9 @@ def mapAnalyzer(mapData: dict):
         at = s
         locations = 0
         encounters = 0
+        if s not in locs:
+            print((s,locs))
+            raise ValueError
         while at in locs:
             depthsList.append(locs[at]["d"])
             encounters += 1 + locs[at]["d"]
@@ -80,10 +89,11 @@ def evalRuns(nRuns: int, generatorFunction):
     print(stats)
     return calcMapGroupMetrics(stats)
 
-nClueLocations = 16
-nLocationEncounters = 2
+nClueLocations = 15
+nLocationEncounters = 1
 nTargets = 3
+nThrowaways = 3
 
-mapgen = mapGenerator(nClueLocations,nLocationEncounters,nTargets)
+mapgen = mapGenerator(nClueLocations,nLocationEncounters,nTargets,nThrowaways)
 
-print(evalRuns(1000,mapgen))
+print(evalRuns(100000,mapgen))
