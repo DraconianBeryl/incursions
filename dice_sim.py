@@ -396,12 +396,15 @@ ward2Face = DieFace(name="Ward", symbols={ DieSymbol.WARD: 2 })
 
 madWarpingDie = Die(name="Mad Warping Die", faces=[warp2Face, warpFace, ward2Face, wsdFace, sFace, sspFace])
 
-#for nDice in range(8 + 1):
-for nDice in (1,4):
+for nDice in range(1,17):
     for die in (warpingDie, midWarpingDie, madWarpingDie):
         pool = DiePool(str(nDice)+"dW", [die]*nDice)
 
         for context in (RollContext.DEPOWERED, RollContext.STANDARD, RollContext.EMPOWERED):
+            # for manual review use these two lines
             printFormattedResults(pool.allResults(context,terseKeys=True))
             print()
+
+            # for copy/paste into a spreadsheet use this line
+            #printSpreadsheetSuccessResults(pool.allResults(context,terseKeys=True))
 
