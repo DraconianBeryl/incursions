@@ -295,12 +295,41 @@ def printFormattedResults(results: dict):
             else:
                 print(emptyCellText, end='')
         print(" = ", end='')
-        print(cellFormat.format(successTotals[nSuccess] / n))
+        print(cellFormat.format(successTotals[nSuccess] / n), end='')
+        print(" ({})".format(successTotals[nSuccess]))
 
     print(" " * (successWidth + 2), *list(["=" * warpWidth] * warpRange) )
     print(" " * (successWidth + 2), end='')
     for warpIndex in range(maxWarp - minWarp + 1):
         print(cellFormat.format(warpTotals[warpIndex] / n), end='')
+    print()
+
+
+def printSpreadsheetSuccessResults(results: dict):
+    minSuccesses = 0
+    maxSuccesses = 0
+
+    for successWarpPair in results:
+        if successWarpPair[0] < minSuccesses:
+            minSuccesses = successWarpPair[0]
+        if successWarpPair[0] > maxSuccesses:
+            maxSuccesses = successWarpPair[0]
+
+    successRange = (maxSuccesses - minSuccesses + 1)
+
+    successTotals = [0] * successRange
+
+    n = 0
+
+    for successWarpPair,count in results.items():
+        successTotals[successWarpPair[0] - minSuccesses] += count
+        n += count
+
+    print("{:d}".format(n), end='')
+
+    for nSuccess in range(minSuccesses,maxSuccesses + 1):
+        print("\t{:d}".format(successTotals[nSuccess]), end='')
+
     print()
 
 warpFace = DieFace(name="Warp", symbols={ DieSymbol.WARP: 1 })
