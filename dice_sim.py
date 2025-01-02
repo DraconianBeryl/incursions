@@ -129,19 +129,29 @@ def symbolWarpValue(sym: DieSymbol, context: RollContext = RollContext.STANDARD)
             return 0
 
 def symbolSuccessValue(sym: DieSymbol, context: RollContext = RollContext.STANDARD):
+    successValue = None;
+
     match sym:
         case DieSymbol.STRONG_POWER:
-            return 1
+            successValue = 2
         case DieSymbol.POWER:
-            if context != RollContext.DEPOWERED:
-                return 1
-            return 0
+            successValue = 1
         case DieSymbol.WEAK_POWER:
-            if context == RollContext.EMPOWERED:
-                return 1
-            return 0
-        case _:
-            return 0
+            successValue = 0
+
+    if successValue is None:
+        return 0
+
+    match context:
+        case RollContext.EMPOWERED:
+            successValue += 1
+        case RollContext.DEPOWERED:
+            successValue -= 1
+
+    if successValue < 0:
+        return 0
+
+    return successValue
 
 class DieFace():
     faceNames = {}
