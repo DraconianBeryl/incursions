@@ -271,8 +271,8 @@ def printFormattedResults(results: dict):
 
     print("n=" + str(n))
 
-    successWidth = max(len(str(minSuccesses)),len(str(maxSuccesses)))
-    warpWidth = max(len(str(minWarp)),len(str(maxWarp)),len("{:%}".format(1)))
+    successWidth = 1 + max(len(str(minSuccesses)),len(str(maxSuccesses)))
+    warpWidth = 1 + max(len(str(minWarp)),len(str(maxWarp)),len("{:%}".format(1)))
 
     successLeaderFormat = " {:+" + str(successWidth) + "d}"
     warpHeaderFormat = " {:^+" + str(warpWidth) + "d}"
@@ -314,7 +314,7 @@ warpingDie = Die(name="Warping Die", faces=[warpFace, warpFace, wardFace, wsFace
 wsdFace = DieFace(name="Weak Success + Ward", symbols={ DieSymbol.WEAK_POWER: 1, DieSymbol.WARD: 1 })
 sspFace = DieFace(name="Strong Success + Warp", symbols={ DieSymbol.STRONG_POWER: 1, DieSymbol.WARP: 1 })
 
-midWarpingDie = Die(name="Mad Warping Die", faces=[warpFace, warpFace, wardFace, wsdFace, sFace, sspFace])
+midWarpingDie = Die(name="Mid Warping Die", faces=[warpFace, warpFace, wardFace, wsdFace, sFace, sspFace])
 
 warp2Face = DieFace(name="Warp", symbols={ DieSymbol.WARP: 2 })
 ward2Face = DieFace(name="Ward", symbols={ DieSymbol.WARD: 2 })
