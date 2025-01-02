@@ -1,25 +1,36 @@
 #!/usr/bin/python3
 
 """
-Rough draft implementation of the corrupting dice - more for practice with
-Python classes than for exploratory simulation purposes. But it may be more
-useful than expected.
+Generating roll tables for Warping dice for the purposes of odds analysis and
+tuning.
 
-As in many games your (net modified) score in an ability is the number of dice
+Reference effective attribute scores:
+     4 - an average starting character without special training or tools
+     8 - a well-suited starting character (6) with a basic tool (2)
+    12 - a well-suited character (6) with bonuses (2) and a decent tool (4)
+    16 - a well-suited endgame character (7) with bonuses (3) and a very good
+         tool (6)
+
+A test may specify a bonus or penalty to the roll, and may require more than
+one success, but see below for caveats about penalties.
+
+As in many games your net modified score in an ability is the number of dice
 that you'll roll.
 
-Unlike most other games, these dice are typed according to the "flavor" of
-magic that's powering them.
+Unlike most other games these dice are typed according to the "flavor" of magic
+that's powering them, with each character having a native flavor and
+non-magical sources being treated as that native flavor.
 
 An entity is perfectly safe whenever working with their native flavor of magic
 but working with other flavors of magic carries multiple risks, including the
-risk of corruption.
+risk of corruption due to Warp.
 
 The magic native to the primary world of this game, the one the protagonists
 are defending, is weak even while it's plentiful. To put this in D&D terms,
-imagine if spell slots only went up to 2nd level, with higher-level slots
-down-converted numerically, e.g. a 6th level slot would become three 2nd level
-slots.
+imagine if spell slots only went up to 2nd level, and instead of gaining
+higher-level slots through progression they instead gain the down-converted
+numerical equivalent in 1st and 2nd level slots, e.g. a 6th level slot would
+become three 2nd level slots.
 
 Magic native to other worlds, such as the elemental planes or the lands of the
 fae, can be much more powerful. But those other worlds are inhabited by beings
@@ -41,30 +52,8 @@ Permanently.
 
 Most, if not all, of the PCs in this game will already be partially corrupted
 by some flavor of alien magic, though they will also have some level of
-protection/containment for it so that it's reasonably safe to let them galavant
-about and fight things that want to eat grandma for dinner.
-
-One question that may be explored with this infrastructure is what difference
-there is at the statistical and "feel" levels for different arrangements of the
-dice, and possibly also the effects of Unintended Consequences. The general
-success and failure mechanics may also be looked at.
-
-For example, is there any difference between: a. a die with two warp and one
-ward b. a die with one warp and no ward.
-
-Some hand calculations of the two simple scenarios above show that it's much
-less lively when you leave two faces blank rather than having one warp and one
-ward.  For 4 dice you have <2% chance of more than 2 Warp with die a., while
-you have >8% chance of more than 2 Warp with die b.  That's more than four
-times the number of "interesting results" (unintended consequences) even with
-two static Ward.
-
-(a quick check of the math verified that it was correct and that the average is
-the same for both dice; what's different is that the dice with the ward symbols
-have a larger range opposing the warp - ranging from -N to N warp - and with the
-same average that requires more results in the upper positive end of the range;
-this works out beautifully from the evil GM perspective because excess ward is
-wasted)
+protection or containment for it so that it's reasonably safe to let them
+galavant about and fight things that want to eat grandma for dinner.
 
 shorthand:
     P = warP
@@ -78,26 +67,73 @@ shorthand:
     S = Success
     F = Failure
 
-a. 1d{P, , ,L,N,G} = 1/6 1P, 5/6 0P
-   2d{P, , ,L,N,G} = 1/36 2P, 10/36 1P, 25/36 0P
-   3d{P, , ,L,N,G} = 1/216 3P, 15/216 2P, 75/216 1P, 125/216 0P
-   4d{P, , ,L,N,G} = 1/1296 4P, 20/1296 3P, 150/1296 2P, 500/1296 1P, 625/1296 0P
+When it comes to counting successes, the initial plan was to count everything
+applicable based on the (em|de)powered status as one success. While looking at
+the odds tables from this it felt like there wasn't enough tuning options
+available for the difficulty of checks, particularly if penalties to the number
+of dice are disallowed.
 
-b. 1d{P,P,D,L,N,G} = 2/6 1P, 3/6 0P, 1/6 1D
-   2d{P,P,D,L,N,G} = 4/36 2P, 12/36 1P, 13/36 0P, 6/36 1D, 1/36 2D
-   3d{P,P,D,L,N,G} = 8/216 3P, 36/216 2P, 66/216 1P, 63/216 0P, 33/216 1D, 9/216 2D, 1/216 3D
-   4d{P,P,D,L,N,G} = 16/1296 4P, 96/1296 3P, 248/1296 2P, 360/1296 1P, 321/1296 0P, 180/1296 1D, 62/1296 2D, 12/1296 3D, 1/1296 4D
+Current thinking is that it may be beneficial to tuning to sometimes count N
+and G as more than one success, based on (em|de)powered state. Specifically,
+{L,N,G} would be {0,1,2} successes (regular power), {0,0,1} (depowered), and
+{1,2,3} {empowered}.
 
-c. 1d{P,P,D,L+D,N,G+P} = 3/6 1P, 1/6 0P, 2/6 1D
-   2d{P,P,D,L+D,N,G+P} = 9/36 2P, 6/36 1P, 13/36 0P, 4/36 1D, 4/36 2D
-   3d{P,P,D,L+D,N,G+P} = 27/216 3P, 27/216 2P, 63/216 1P, 37/216 0P, 42/216 1D, 12/216 2D, 8/216 3D
-   4d{P,P,D,L+D,N,G+P} = 81/1296 4P, 108/1296 3P, 270/1296 2P, 228/1296 1P, 289/1296 0P, 152/1296 1D, 120/1296 2D, 32/1296 3D, 16/1296 4D
+This is still subject to playtesting, but for the feel that I want for the game
+I expect that I'll need to increase the amount of Warp/Ward on each die, though
+maintaining the expected value of 1/6 P.
 
-Other options to explore
- a. one always warp and one maybe warp (condition TBD)
- b. three levels of warp - corresponding with the three levels of power for
-    success/failure
- c. sides with multiple symbols?
+Strawman low Warp dice:
+    {P, , ,L,N,G}
+      EV(P) = +1/6 (  0,  0,  0,  0,  0, +1), [0,1]
+      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
+      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
+      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
+
+Original Warp dice (warpingDie):
+    {P,P,D,L,N,G}
+      EV(P) = +1/6 ( -1,  0,  0,  0, +1, +1), [-1,1]
+      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
+      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
+      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
+
+More Warp dice (midWarpingDie):
+    {P,P,D,DL,N,PG}
+      EV(P) = +1/6 ( -1, -1,  0, +1, +1, +1), [-1,1]
+      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
+      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
+      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
+
+Even More Warp dice (madWarpingDie):
+    {PP,P,DD,DL,N,PG}
+      EV(P) = +1/6 ( -2, -1,  0, +1, +1, +2), [-2,2]
+      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
+      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
+      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
+
+The higher variance dice are more punishing to the player because there's no
+gameplay benefit to having excess Ward, with the mathematical balance only
+manifesting as more dice are rolled.
+
+If production costs, and player confusion, weren't considerations I'd probably
+adopt using the original warpingDie when Depowered, the midWarpingDie when at
+Normal power, and the madWarpingDie when Overpowered, but for a physical game
+both of those considerations make that unlikely to be workable.
+
+Therefore I've tentatively selected the madWarpingDie for use in the first
+prototypes - I'd rather have a game about corruption need to dial back the
+corruption for balance rather than feel like it's missing. The need to dial it
+back will be more obvious than a feel that it's missing.
+
+This Warping effect of alien flavors of magic affects the application of
+penalties to checks - only native dice can be removed. This is beneficial to
+the players in that it may give them an effective minimum that's greater than
+1, and also being beneficial to the gameplay experience by forcing ongoing
+corruption to be ongoing. The only real alternative to this rule that's true to
+the intended experience of this game would be disallowing penalties completely,
+which takes away one of the tuning dials for the difficulty of checks. It's up
+for consideration that the minimum is "all alien dice and at least one native
+die", as is using penalties sparingly.
+
 """
 
 from dataclasses import dataclass
