@@ -56,73 +56,61 @@ protection or containment for it so that it's reasonably safe to let them
 galavant about and fight things that want to eat grandma for dinner.
 
 shorthand:
-    P = warP
-    D = warD
-      = blank
-    L = Lesser success (only counts as success when empowered)
-    N = Normal success (counts as success unless depowered)
-    G = Greater success (always counts as success)
+    -P = weak warP (only counts when empowered)
+    +P = warP (counts unless depowered)
+    *P = strong warP (always counts)
+    -D = weak warD (only counts when empowered)
+    +D = warD (counts unless depowered)
+    *D = strong warD (always counts)
+    -S = weak Success (only counts when empowered)
+    +S = Success (counts unless depowered)
+    *S = strong Success (always counts)
     O = Empowered (mnemonic = Over-powered)
     U = Depowered (mnemonic = Under-powered)
-    S = Success
-    F = Failure
 
-When it comes to counting successes, the initial plan was to count everything
-applicable based on the (em|de)powered status as one success. While looking at
-the odds tables from this it felt like there wasn't enough tuning options
-available for the difficulty of checks, particularly if penalties to the number
-of dice are disallowed.
+This is still subject to playtesting, but I think it gives a good range of both
+Warp/Ward and successes.
 
-Current thinking is that it may be beneficial to tuning to sometimes count N
-and G as more than one success, based on (em|de)powered state. Specifically,
-{L,N,G} would be {0,1,2} successes (regular power), {0,0,1} (depowered), and
-{1,2,3} {empowered}.
+Variable Warp dice (warpingDie):
+    {
+        (*P|-P),
+        (*P),
+        (*D|-D),
+        (-S,+D),
+        (+S,-S),
+        (*S,+S,-S,+P)
+    }
 
-This is still subject to playtesting, but for the feel that I want for the game
-I expect that I'll need to increase the amount of Warp/Ward on each die, though
-maintaining the expected value of 1/6 P.
+Resulting values:
+    Depowered:
+        Warp:      { +1, +1, -1,  0,  0,  0 } = EV(P) = +1/6 [-1,+1]
+        Successes: {  0,  0,  0,  0,  0, +1 } = EV(S) = +1/6 [ 0,+1]
+    Normal:
+        Warp:      { +1, +1, -1, -1,  0, +1 } = EV(P) = +1/6 [-1,+1]
+        Successes: {  0,  0,  0,  0, +1, +2 } = EV(S) = +3/6 [ 0,+2]
+    Empowered:
+        Warp:      { +2, +1, -2, -1,  0, +1 } = EV(P) = +1/6 [-2,+2]
+        Successes: {  0,  0,  0, +1, +2, +3 } = EV(S) = +6/6 [ 0,+3]
 
-Strawman low Warp dice:
-    {P, , ,L,N,G}
-      EV(P) = +1/6 (  0,  0,  0,  0,  0, +1), [0,1]
-      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
-      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
-      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
+Because the higher-variance versions of the Warp/Ward distributions remain
+centered around the same midpoint it leads to some interesting results when
+combined with static Ward (such as the PC's starting protective gear).
 
-Original Warp dice (warpingDie):
-    {P,P,D,L,N,G}
-      EV(P) = +1/6 ( -1,  0,  0,  0, +1, +1), [-1,1]
-      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
-      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
-      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
+Specifically, the chances of having excess Warp don't rise dramatically as the
+number of dice increases, though the severity of that excess Warp does increase.
 
-More Warp dice (midWarpingDie):
-    {P,P,D,DL,N,PG}
-      EV(P) = +1/6 ( -1, -1,  0, +1, +1, +1), [-1,1]
-      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
-      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
-      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
-
-Even More Warp dice (madWarpingDie):
-    {PP,P,DD,DL,N,PG}
-      EV(P) = +1/6 ( -2, -1,  0, +1, +1, +2), [-2,2]
-      EV(US) = 1/6 (  0,  0,  0,  0,  0,  1), [0,1]
-      EV(S)  = 3/6 (  0,  0,  0,  0,  1,  2), [0,2]
-      EV(OS) = 6/6 (  0,  0,  0,  1,  2,  3), [0,3]
-
-The higher variance dice are more punishing to the player because there's no
-gameplay benefit to having excess Ward, with the mathematical balance only
-manifesting as more dice are rolled.
-
-If production costs, and player confusion, weren't considerations I'd probably
-adopt using the original warpingDie when Depowered, the midWarpingDie when at
-Normal power, and the madWarpingDie when Overpowered, but for a physical game
-both of those considerations make that unlikely to be workable.
-
-Therefore I've tentatively selected the madWarpingDie for use in the first
-prototypes - I'd rather have a game about corruption need to dial back the
-corruption for balance rather than feel like it's missing. The need to dial it
-back will be more obvious than a feel that it's missing.
+To give a concrete example:
+  + At Normal power if you have 1 static Ward and roll 2 Warping dice you have
+    a 75% chance to have no excess Warp and a 25% chance of having one excess
+    Warp.
+  + At Normal power if you have 1 static Ward and roll 3 Warping dice you still
+    have a 75% chance to have no excess Warp, but now you only have a 12.5%
+    chance of one excess Warp and you've gained a 12.5% chance of two excess
+    Warp.
+  + At Normal power if you have 1 static Ward you have to roll 9 Warping dice
+    before you drop below a 50% chance to have no excess Warp, and that's
+    barely below 50% at 49.4%, but you can have as much as 8 excess Warp and
+    you have more than a 13.5% chance of having 4 or more excess Warp.
 
 This Warping effect of alien flavors of magic affects the application of
 penalties to checks - only native dice can be removed. This is beneficial to
@@ -133,6 +121,58 @@ the intended experience of this game would be disallowing penalties completely,
 which takes away one of the tuning dials for the difficulty of checks. It's up
 for consideration that the minimum is "all alien dice and at least one native
 die", as is using penalties sparingly.
+
+
+production/usability thoughts relative to symbology
+
+tentatively, each of Warp, Ward, and Power will be represented by the outline
+of a symbol with an inset '-', '+', or '*' (specifically six-pointed)
+indicating in which contexts that symbol is counted and each side having up to
+four symbols.
+
+tentative symbol associations:
+    Warp
+        Diamond (a "warped" square)
+    Ward
+        Shield (a (mostly?) flat top and sides that curve to a bottom point,
+        see the "rosa shield" icon on game-icons.net for a possible outline)
+    Power/Success
+        Circle (not ideal from an association perspective, but easy to read)
+
+On colors and magical flavor symbology
+
+The acrylic dice available through the game crafter come in:
+    Black
+    Blue
+    Green
+    Orange
+    Pink
+    Red
+    White
+    Pale Yellow
+
+Possible associations, color and symbol (for cards, etc)
+    Red
+      * Native - the color of our blood
+        A blood drop
+        A heart
+    Pale Yellow
+      + Fire - the color of summer's sun
+        A sun with rays
+    Orange
+      + Earth - the color of autumn's bounty
+        A gourd or pumpkin
+    White
+      + Water - the color of winter's snow
+        A snowflake (probably just lines)
+    Green
+      + Air - the color of spring's growth
+        A leaf or blades of grass
+
+    Black
+        Shadow (not in base game)
+    Blue
+    Pink
 
 """
 
@@ -149,45 +189,55 @@ class RollContext(enum.StrEnum):
     EMPOWERED = enum.auto()
 
 class DieSymbol(enum.StrEnum):
+    WEAK_WARP    = enum.auto()
     WARP         = enum.auto()
+    STRONG_WARP  = enum.auto()
+    WEAK_WARD    = enum.auto()
     WARD         = enum.auto()
+    STRONG_WARD  = enum.auto()
     WEAK_POWER   = enum.auto()
     POWER        = enum.auto()
     STRONG_POWER = enum.auto()
 
 def symbolWarpValue(sym: DieSymbol, context: RollContext = RollContext.STANDARD):
     match sym:
-        case DieSymbol.WARP:
+        case DieSymbol.STRONG_WARP:
             return 1
-        case DieSymbol.WARD:
+        case DieSymbol.STRONG_WARD:
             return -1
+        case DieSymbol.WARP:
+            if context != RollContext.DEPOWERED:
+                return 1
+            return 0
+        case DieSymbol.WARD:
+            if context != RollContext.DEPOWERED:
+                return -1
+            return 0
+        case DieSymbol.WEAK_WARP:
+            if context == RollContext.EMPOWERED:
+                return 1
+            return 0
+        case DieSymbol.WEAK_WARD:
+            if context == RollContext.EMPOWERED:
+                return -1
+            return 0
         case _:
             return 0
 
 def symbolSuccessValue(sym: DieSymbol, context: RollContext = RollContext.STANDARD):
-    successValue = None;
-
     match sym:
         case DieSymbol.STRONG_POWER:
-            successValue = 2
+            return 1
         case DieSymbol.POWER:
-            successValue = 1
+            if context != RollContext.DEPOWERED:
+                return 1
+            return 0
         case DieSymbol.WEAK_POWER:
-            successValue = 0
-
-    if successValue is None:
-        return 0
-
-    match context:
-        case RollContext.EMPOWERED:
-            successValue += 1
-        case RollContext.DEPOWERED:
-            successValue -= 1
-
-    if successValue < 0:
-        return 0
-
-    return successValue
+            if context == RollContext.EMPOWERED:
+                return 1
+            return 0
+        case _:
+            return 0
 
 class DieFace():
     faceNames = {}
@@ -248,7 +298,7 @@ class DiePool():
         self.dice = dice
         self.nDice = len(dice)
 
-    def allResults(self, context: RollContext = RollContext.STANDARD, terseKeys: bool = False):
+    def allResults(self, context: RollContext = RollContext.STANDARD, terseKeys: bool = False, disregardExcessWard: bool = False, nStaticWard: int = 0):
         results = { (0,0): 1 }
 
         for die in self.dice:
@@ -263,6 +313,24 @@ class DiePool():
                     nextResults[newResult] = nextResults.get(newResult,0) + dieResults[dieResult] * results[prevResult]
 
             results = nextResults
+
+        if disregardExcessWard:
+            newResults = {}
+
+            for successWarpPair, count in results.items():
+                effectiveKey = successWarpPair
+
+                if successWarpPair[1] < nStaticWard:
+                    effectiveKey = (successWarpPair[0],0)
+                else:
+                    effectiveKey = (successWarpPair[0],successWarpPair[1] - nStaticWard)
+
+                if effectiveKey not in newResults:
+                    newResults[effectiveKey] = 0
+
+                newResults[effectiveKey] += count
+
+            results = newResults
 
         if terseKeys:
             return results
@@ -378,33 +446,32 @@ def printSpreadsheetSuccessResults(results: dict):
 
     print()
 
-warpFace = DieFace(name="Warp", symbols={ DieSymbol.WARP: 1 })
-wardFace = DieFace(name="Ward", symbols={ DieSymbol.WARD: 1 })
-wsFace = DieFace(name="Weak Success", symbols={ DieSymbol.WEAK_POWER: 1 })
-sFace = DieFace(name="Normal Success", symbols={ DieSymbol.POWER: 1 })
-ssFace = DieFace(name="Strong Success", symbols={ DieSymbol.STRONG_POWER: 1 })
+p2Face = DieFace(name="Warp2", symbols={ DieSymbol.STRONG_WARP: 1, DieSymbol.WEAK_WARP: 1 })
+p1Face = DieFace(name="Warp", symbols={ DieSymbol.STRONG_WARP: 1 })
+d2Face = DieFace(name="Ward2", symbols={ DieSymbol.STRONG_WARD: 1, DieSymbol.WEAK_WARD: 1 })
+wsdFace = DieFace(name="Weak Power", symbols={ DieSymbol.WEAK_POWER: 1, DieSymbol.WARD: 1 })
+sFace = DieFace(name="Normal Power", symbols={ DieSymbol.POWER: 1, DieSymbol.WEAK_POWER: 1 })
+sspFace = DieFace(name="Strong Power", symbols={ DieSymbol.STRONG_POWER: 1, DieSymbol.POWER: 1, DieSymbol.WEAK_POWER: 1, DieSymbol.WARP: 1 })
 
-warpingDie = Die(name="Warping Die", faces=[warpFace, warpFace, wardFace, wsFace, sFace, ssFace])
+warpingDie = Die(name="Warping Die", faces=[p2Face, p1Face, d2Face, wsdFace, sFace, sspFace])
 
-wsdFace = DieFace(name="Weak Success + Ward", symbols={ DieSymbol.WEAK_POWER: 1, DieSymbol.WARD: 1 })
-sspFace = DieFace(name="Strong Success + Warp", symbols={ DieSymbol.STRONG_POWER: 1, DieSymbol.WARP: 1 })
+bFace = DieFace(name="Blank", symbols={})
+wsFace = DieFace(name="Weak Power", symbols={ DieSymbol.WEAK_POWER: 1 })
+ssFace = DieFace(name="Strong Power", symbols={ DieSymbol.STRONG_POWER: 1, DieSymbol.POWER: 1, DieSymbol.WEAK_POWER: 1 })
 
-midWarpingDie = Die(name="Mid Warping Die", faces=[warpFace, warpFace, wardFace, wsdFace, sFace, sspFace])
+nativeDie = Die(name="Native Die", faces=[bFace, bFace, bFace, wsFace, sFace, ssFace])
 
-warp2Face = DieFace(name="Warp", symbols={ DieSymbol.WARP: 2 })
-ward2Face = DieFace(name="Ward", symbols={ DieSymbol.WARD: 2 })
+for nStaticWard in range(0,4):
+    for nWarpingDice in range(0,10):
+        for nNativeDice in range(2,3):
+            pool = DiePool(str(nNativeDice) + "dN + " + str(nWarpingDice) + "dW", ([nativeDie] * nNativeDice) + ([warpingDie] * nWarpingDice))
 
-madWarpingDie = Die(name="Mad Warping Die", faces=[warp2Face, warpFace, ward2Face, wsdFace, sFace, sspFace])
+            for context in (RollContext.DEPOWERED, RollContext.STANDARD, RollContext.EMPOWERED):
+                # for manual review use these two lines
+                print(pool.name + " plus " + str(nStaticWard) + " Ward, " + context)
+                printFormattedResults(pool.allResults(context,terseKeys=True,disregardExcessWard=True,nStaticWard=nStaticWard))
+                print()
 
-for nDice in range(1,17):
-    for die in (warpingDie, midWarpingDie, madWarpingDie):
-        pool = DiePool(str(nDice)+"dW", [die]*nDice)
-
-        for context in (RollContext.DEPOWERED, RollContext.STANDARD, RollContext.EMPOWERED):
-            # for manual review use these two lines
-            printFormattedResults(pool.allResults(context,terseKeys=True))
-            print()
-
-            # for copy/paste into a spreadsheet use this line
-            #printSpreadsheetSuccessResults(pool.allResults(context,terseKeys=True))
+                # for copy/paste into a spreadsheet use this line
+                #printSpreadsheetSuccessResults(pool.allResults(context,terseKeys=True))
 
