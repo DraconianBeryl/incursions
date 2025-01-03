@@ -122,6 +122,58 @@ which takes away one of the tuning dials for the difficulty of checks. It's up
 for consideration that the minimum is "all alien dice and at least one native
 die", as is using penalties sparingly.
 
+
+production/usability thoughts relative to symbology
+
+tentatively, each of Warp, Ward, and Power will be represented by the outline
+of a symbol with an inset '-', '+', or '*' (specifically six-pointed)
+indicating in which contexts that symbol is counted and each side having up to
+four symbols.
+
+tentative symbol associations:
+    Warp
+        Diamond (a "warped" square)
+    Ward
+        Shield (a (mostly?) flat top and sides that curve to a bottom point,
+        see the "rosa shield" icon on game-icons.net for a possible outline)
+    Power/Success
+        Circle (not ideal from an association perspective, but easy to read)
+
+On colors and magical flavor symbology
+
+The acrylic dice available through the game crafter come in:
+    Black
+    Blue
+    Green
+    Orange
+    Pink
+    Red
+    White
+    Pale Yellow
+
+Possible associations, color and symbol (for cards, etc)
+    Red
+      * Native - the color of our blood
+        A blood drop
+        A heart
+    Pale Yellow
+      + Fire - the color of summer's sun
+        A sun with rays
+    Orange
+      + Earth - the color of autumn's bounty
+        A gourd or pumpkin
+    White
+      + Water - the color of winter's snow
+        A snowflake (probably just lines)
+    Green
+      + Air - the color of spring's growth
+        A leaf or blades of grass
+
+    Black
+        Shadow (not in base game)
+    Blue
+    Pink
+
 """
 
 from dataclasses import dataclass
